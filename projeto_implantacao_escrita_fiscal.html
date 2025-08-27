@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto de Implantação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #2c2c2c 50%, #c0c0c0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #E0FF42;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .main-frame {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 140, 0, 0.3);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .main-frame:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(255, 140, 0, 0.2);
+        }
+
+        .main-frame-header {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(255, 140, 0, 0.1));
+            padding: 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .main-frame-header:hover {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.3), rgba(255, 140, 0, 0.2));
+        }
+
+        .main-frame-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #E0FF42;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .main-frame.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .main-frame-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .main-frame.expanded .main-frame-content {
+            max-height: 800px; /* Ajustado para permitir rolagem */
+            overflow-y: auto;
+        }
+
+        .main-frame-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-frame-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .main-frame-content::-webkit-scrollbar-thumb {
+            background: darkorange;
+            border-radius: 4px;
+        }
+
+        .main-frame-content::-webkit-scrollbar-thumb:hover {
+            background: #ff8c00;
+        }
+
+        .sub-frame {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sub-frame:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sub-frame-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            background: rgba(255, 140, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sub-frame-header:hover {
+            background: rgba(255, 140, 0, 0.15);
+        }
+
+        .sub-frame-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #c0c0c0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sub-frame-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .sub-frame.expanded .sub-frame-content {
+            max-height: 800px;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border-left: 4px solid darkorange;
+            margin-left: 20px;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: darkorange;
+            border-radius: 4px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #ff8c00;
+        }
+
+        .content-item {
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+            padding-left: 15px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .content-item::before {
+            content: "▸";
+            color: darkorange;
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+        }
+
+        .path-item {
+            color: darkorange;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .action-item {
+            color: #c0c0c0;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .main-frame-title {
+                font-size: 1.2rem;
+            }
+            
+            .sub-frame-title {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+
+        .loading-animation {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">PROJETO | IMPLANTAÇÃO - ESCRITA FISCAL</h1>
+        
+        <div id="content-container">
+            <!-- Content will be loaded here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const contentData = {
+            main_frames: [
+                {
+                    title: "PARAMETRIZAR E FECHAR EMPRESAS DO SIMPLES",
+                    sub_frames: [
+                        {
+                            title: "IMPORTAR PERFIL DE EMPRESA [ MATRIZ / FILIAL ]",
+                            content: [
+                                "//CONTROLE/EMPRESAS",
+                                "Clicar em [ importação ]",
+                                "No campo \"importar dados\" selecionar \"conforme cadastro de perfis de empresas\"",
+                                "Clicar em \"Perfil\" e pressionar F2",
+                                "Selecionar o perfil conforme regime tributário e tipo de empresa (matriz / filial)"
+                            ]
+                        },
+                        {
+                            title: "AJUSTAR DATA INICIAL E INFORMAR SALDO INICIAL",
+                            content: [
+                                "//CONTROLE/PARÂMETROS",
+                                "Aba //Geral",
+                                "Clicar em [ nova vigência ]",
+                                "Informar a data do primeiro fechamento no sistema",
+                                "Aba //Personaliza/Geral",
+                                "No campo \"inicial\" informar a mesma data da vigência da tela anterior",
+                                "No campo \"início das atividades\" informar a abertura da empresa",
+                                "Aba //Saldo Inicial",
+                                "Informar o saldo inicial dos impostos se houver saldo anterior ao período a ser apurado no sistema."
+                            ]
+                        },
+                        {
+                            title: "INFORMAR RBT12",
+                            content: [
+                                "//MOVIMENTOS/OUTROS/SIMPLES NACIONAL/RECEITA BRUTA ACUMULADA",
+                                "Informar no campo \"início do cálculo do simples nacional no sistema\" a data da primeira apuração, igual a vigência cadastrada nos parâmetros.",
+                                "Informar manualmente a receita dos últimos 12 meses"
+                            ]
+                        },
+                        {
+                            title: "INFORMAR ÚLTIMOS 12 VALORES DA FOLHA (FATOR R)",
+                            content: [
+                                "//MOVIMENTOS/OUTROS/SIMPLES NACIONAL/VALOR DA FOLHA",
+                                "Informe a competência do primeiro cálculo no sistema",
+                                "Informe manualmente os últimos 12 valores da folha"
+                            ]
+                        },
+                        {
+                            title: "IMPORTAR NOTAS FISCAIS",
+                            content: [
+                                "DANFE ENTRADA E SAÍDA MODELO 55",
+                                "//utilitários/importação/importação padrão/nf-e arquivo XML",
+                                "NFC-E",
+                                "//utilitários/importação/importação padrão/NFC-e arquivo XML",
+                                "CF-E sat",
+                                "//utilitários/importação/importação padrão/CF-e arquivo XML",
+                                "NFS-E ABRASF (serviços)",
+                                "//utilitários/importação/importação padrão/NFS-e arquivo XML ABRASF",
+                                "SPED FISCAL",
+                                "//utilitários/importação/importação padrão/SPED Fiscal",
+                                "SPED PIS E COFINS",
+                                "//utilitários/importação/importação padrão/SPED PIS e COFINS",
+                                "CT-E",
+                                "//utilitários/importação/importação padrão/cte e cte os/arquivo xml"
+                            ]
+                        },
+                        {
+                            title: "APURAR IMPOSTO",
+                            content: [
+                                "//MOVIMENTOS/APURAÇÃO",
+                                "Informe o período",
+                                "Clique em [ processa período ]"
+                            ]
+                        },
+                        {
+                            title: "RELATÓRIOS DE NOTAS",
+                            content: [
+                                "COMPRAS + SERV TOMADOS",
+                                "//relatórios/acompanhamentos/entradas",
+                                "VENDAS + CT-E",
+                                "//relatórios/acompanhamentos/saídas",
+                                "SERV. PRESTADOS",
+                                "//relatórios/acompanhamentos/serviços",
+                                "CF-E",
+                                "//relatórios/acompanhamentos/cupom fiscal eletrônico cf-e",
+                                "ACUMULADORES",
+                                "//relatórios/acompanhamentos/resumo por acumuladores",
+                                "NOTAS NÃO LANÇADAS",
+                                "//relatórios/acompanhamentos/notas não lançadas",
+                                "FATURAMENTO",
+                                "//relatórios/acompanhamentos/demonstrativo faturamento"
+                            ]
+                        },
+                        {
+                            title: "GUIAS",
+                            content: [
+                                "DAS (transmissão e geração da guia)",
+                                "//relatórios/guias/federais/das",
+                                "DARE (geração da guia no portal do sefaz)",
+                                "//relatórios/guias/estaduais/dare"
+                            ]
+                        },
+                        {
+                            title: "RELATÓRIOS DE IMPOSTOS (conferência)",
+                            content: [
+                                "DAS",
+                                "//relatórios/impostos/simples nacional",
+                                "IPI / ST / DIFAL e outros",
+                                "//relatórios/impostos/demonstrativos"
+                            ]
+                        },
+                        {
+                            title: "DEMONSTRATIVOS",
+                            content: [
+                                "DEFIS",
+                                "//relatórios/informativos/federais/defis/(selecionar o ano)",
+                                "DESTDA",
+                                "//relatórios/informativos/federais/destda"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: "PARAMETRIZAR E FECHAR EMPRESAS DO LUCRO PRESUMIDO",
+                    sub_frames: [
+                        {
+                            title: "IMPORTAR PERFIL DE EMPRESA [ MATRIZ / FILIAL ]",
+                            content: [
+                                "//CONTROLE/EMPRESAS",
+                                "Clicar em [ importação ]",
+                                "No campo \"importar dados\" selecionar \"conforme cadastro de perfis de empresas\"",
+                                "Clicar em \"Perfil\" e pressionar F2",
+                                "Selecionar o perfil conforme regime tributário e tipo de empresa (matriz / filial)"
+                            ]
+                        },
+                        {
+                            title: "AJUSTAR DATA INICIAL E INFORMAR SALDO INICIAL",
+                            content: [
+                                "//CONTROLE/PARÂMETROS",
+                                "Aba //Geral",
+                                "Clicar em [ nova vigência ]",
+                                "Informar a data do primeiro fechamento no sistema",
+                                "Aba //Personaliza/Geral",
+                                "No campo \"inicial\" informar a mesma data da vigência da tela anterior",
+                                "No campo \"início das atividades\" informar a abertura da empresa",
+                                "Aba //Saldo Inicial",
+                                "Informar o saldo inicial dos impostos se houver saldo anterior ao período a ser apurado no sistema."
+                            ]
+                        },
+                        {
+                            title: "IMPORTAR NOTAS FISCAIS",
+                            content: [
+                                "DANFE ENTRADA E SAÍDA MODELO 55",
+                                "//utilitários/importação/importação padrão/nf-e arquivo XML",
+                                "NFC-E",
+                                "//utilitários/importação/importação padrão/NFC-e arquivo XML",
+                                "CF-E sat",
+                                "//utilitários/importação/importação padrão/CF-e arquivo XML",
+                                "NFS-E ABRASF (serviços)",
+                                "//utilitários/importação/importação padrão/NFS-e arquivo XML ABRASF",
+                                "SPED FISCAL",
+                                "//utilitários/importação/importação padrão/SPED Fiscal",
+                                "SPED PIS E COFINS",
+                                "//utilitários/importação/importação padrão/SPED PIS e COFINS",
+                                "CT-E",
+                                "//utilitários/importação/importação padrão/cte e cte os/arquivo xml"
+                            ]
+                        },
+                        {
+                            title: "RELATÓRIOS DE NOTAS",
+                            content: [
+                                "COMPRAS + SERV TOMADOS",
+                                "//relatórios/acompanhamentos/entradas",
+                                "VENDAS + CT-E",
+                                "//relatórios/acompanhamentos/saídas",
+                                "SERV. PRESTADOS",
+                                "//relatórios/acompanhamentos/serviços",
+                                "CF-E",
+                                "//relatórios/acompanhamentos/cupom fiscal eletrônico cf-e",
+                                "ACUMULADORES",
+                                "//relatórios/acompanhamentos/resumo por acumuladores",
+                                "NOTAS NÃO LANÇADAS",
+                                "//relatórios/acompanhamentos/notas não lançadas",
+                                "FATURAMENTO",
+                                "//relatórios/acompanhamentos/demonstrativo faturamento"
+                            ]
+                        },
+                        {
+                            title: "APURAR IMPOSTO",
+                            content: [
+                                "//MOVIMENTOS/APURAÇÃO",
+                                "Informe o período",
+                                "Clique em [ processa período ]"
+                            ]
+                        },
+                        {
+                            title: "RELATÓRIOS DE CONFERÊNCIA DOS IMPOSTOS",
+                            content: [
+                                "PIS E COFINS",
+                                "//relatórios/impostos/demonstrativo efd PIS e COFINS",
+                                "//relatórios/impostos/pis e cofins",
+                                "IRPJ E CSLL",
+                                "//relatórios/impostos/demonstrativos",
+                                "ICMS/IPI/ST E OUTROS",
+                                "//relatórios/impostos/demonstrativos",
+                                "RETENÇÕES",
+                                "//relatórios/impostos/demonstrativos"
+                            ]
+                        },
+                        {
+                            title: "GERAR INFORMATIVOS",
+                            content: [
+                                "SPED FISCAL",
+                                "//relatórios/informativos/federais/sped fiscal",
+                                "SPED PIS E COFINS",
+                                "//relatórios/informativos/federais/sped pis e cofins",
+                                "EFD REINF",
+                                "//relatórios/informativos/federais/efd reinf/enviar arquivos",
+                                "MIT",
+                                "//relatórios/informativos/federais/MIT",
+                                "DMED",
+                                "//relatórios/informativos/federais/DMED",
+                                "DIMOB",
+                                "//relatórios/informativos/federais/DIMOB",
+                                "DIRBI",
+                                "//relatórios/informativos/federais/DIRBI"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    title: "PARAMETRIZAR E FECHAR EMPRESAS DO LUCRO REAL",
+                    sub_frames: [
+                        {
+                            title: "IMPORTAR PERFIL DE EMPRESA [ MATRIZ / FILIAL ]",
+                            content: [
+                                "//CONTROLE/EMPRESAS",
+                                "Clicar em [ importação ]",
+                                "No campo \"importar dados\" selecionar \"conforme cadastro de perfis de empresas\"",
+                                "Clicar em \"Perfil\" e pressionar F2",
+                                "Selecionar o perfil conforme regime tributário e tipo de empresa (matriz / filial)"
+                            ]
+                        },
+                        {
+                            title: "AJUSTAR DATA INICIAL E INFORMAR SALDO INICIAL",
+                            content: [
+                                "//CONTROLE/PARÂMETROS",
+                                "Aba //Geral",
+                                "Clicar em [ nova vigência ]",
+                                "Informar a data do primeiro fechamento no sistema",
+                                "Aba //Personaliza/Geral",
+                                "No campo \"inicial\" informar a mesma data da vigência da tela anterior",
+                                "No campo \"início das atividades\" informar a abertura da empresa",
+                                "Aba //Saldo Inicial",
+                                "Informar o saldo inicial dos impostos se houver saldo anterior ao período a ser apurado no sistema."
+                            ]
+                        },
+                        {
+                            title: "IMPORTAR NOTAS FISCAIS",
+                            content: [
+                                "DANFE ENTRADA E SAÍDA MODELO 55",
+                                "//utilitários/importação/importação padrão/nf-e arquivo XML",
+                                "NFC-E",
+                                "//utilitários/importação/importação padrão/NFC-e arquivo XML",
+                                "CF-E sat",
+                                "//utilitários/importação/importação padrão/CF-e arquivo XML",
+                                "NFS-E ABRASF (serviços)",
+                                "//utilitários/importação/importação padrão/NFS-e arquivo XML ABRASF",
+                                "SPED FISCAL",
+                                "//utilitários/importação/importação padrão/SPED Fiscal",
+                                "SPED PIS E COFINS",
+                                "//utilitários/importação/importação padrão/SPED PIS e COFINS",
+                                "CT-E",
+                                "//utilitários/importação/importação padrão/cte e cte os/arquivo xml"
+                            ]
+                        },
+                        {
+                            title: "RELATÓRIOS DE NOTAS",
+                            content: [
+                                "COMPRAS + SERV TOMADOS",
+                                "//relatórios/acompanhamentos/entradas",
+                                "VENDAS + CT-E",
+                                "//relatórios/acompanhamentos/saídas",
+                                "SERV. PRESTADOS",
+                                "//relatórios/acompanhamentos/serviços",
+                                "CF-E",
+                                "//relatórios/acompanhamentos/cupom fiscal eletrônico cf-e",
+                                "ACUMULADORES",
+                                "//relatórios/acompanhamentos/resumo por acumuladores",
+                                "NOTAS NÃO LANÇADAS",
+                                "//relatórios/acompanhamentos/notas não lançadas",
+                                "FATURAMENTO",
+                                "//relatórios/acompanhamentos/demonstrativo faturamento"
+                            ]
+                        },
+                        {
+                            title: "APURAR IMPOSTO",
+                            content: [
+                                "//MOVIMENTOS/APURAÇÃO",
+                                "Informe o período",
+                                "Clique em [ processa período ]"
+                            ]
+                        },
+                        {
+                            title: "RELATÓRIOS DE CONFERÊNCIA DOS IMPOSTOS",
+                            content: [
+                                "PIS E COFINS",
+                                "//relatórios/impostos/demonstrativo efd PIS e COFINS",
+                                "//relatórios/impostos/pis e cofins",
+                                "IRPJ E CSLL",
+                                "//relatórios/impostos/demonstrativos",
+                                "ICMS/IPI/ST E OUTROS",
+                                "//relatórios/impostos/demonstrativos",
+                                "RETENÇÕES",
+                                "//relatórios/impostos/demonstrativos"
+                            ]
+                        },
+                        {
+                            title: "GERAR INFORMATIVOS",
+                            content: [
+                                "SPED FISCAL",
+                                "//relatórios/informativos/federais/sped fiscal",
+                                "SPED PIS E COFINS",
+                                "//relatórios/informativos/federais/sped pis e cofins",
+                                "EFD REINF",
+                                "//relatórios/informativos/federais/efd reinf/enviar arquivos",
+                                "MIT",
+                                "//relatórios/informativos/federais/MIT",
+                                "DMED",
+                                "//relatórios/informativos/federais/DMED",
+                                "DIMOB",
+                                "//relatórios/informativos/federais/DIMOB",
+                                "DIRBI",
+                                "//relatórios/informativos/federais/DIRBI"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        function createContentItem(item) {
+            const div = document.createElement('div');
+            div.className = 'content-item';
+            
+            if (item.startsWith('//')) {
+                div.className += ' path-item';
+            } else {
+                div.className += ' action-item';
+            }
+            
+            div.textContent = item;
+            return div;
+        }
+
+        function createSubFrame(subFrame, index) {
+            const subFrameDiv = document.createElement('div');
+            subFrameDiv.className = 'sub-frame loading-animation';
+            subFrameDiv.style.animationDelay = `${index * 0.1}s`;
+            
+            const header = document.createElement('div');
+            header.className = 'sub-frame-header';
+            header.innerHTML = `
+                <div class="sub-frame-title">
+                    ${subFrame.title}
+                    <span class="expand-icon">▼</span>
+                </div>
+            `;
+            
+            const content = document.createElement('div');
+            content.className = 'sub-frame-content';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'content-wrapper';
+            
+            subFrame.content.forEach(item => {
+                wrapper.appendChild(createContentItem(item));
+            });
+            
+            content.appendChild(wrapper);
+            subFrameDiv.appendChild(header);
+            subFrameDiv.appendChild(content);
+            
+            header.addEventListener('click', () => {
+                subFrameDiv.classList.toggle('expanded');
+            });
+            
+            return subFrameDiv;
+        }
+
+        function createMainFrame(mainFrame, index) {
+            const mainFrameDiv = document.createElement('div');
+            mainFrameDiv.className = 'main-frame loading-animation';
+            mainFrameDiv.style.animationDelay = `${index * 0.2}s`;
+            
+            const header = document.createElement('div');
+            header.className = 'main-frame-header';
+            header.innerHTML = `
+                <div class="main-frame-title">
+                    ${mainFrame.title}
+                    <span class="expand-icon">▼</span>
+                </div>
+            `;
+            
+            const content = document.createElement('div');
+            content.className = 'main-frame-content';
+            
+            mainFrame.sub_frames.forEach((subFrame, subIndex) => {
+                content.appendChild(createSubFrame(subFrame, subIndex));
+            });
+            
+            mainFrameDiv.appendChild(header);
+            mainFrameDiv.appendChild(content);
+            
+            header.addEventListener('click', () => {
+                mainFrameDiv.classList.toggle('expanded');
+            });
+            
+            return mainFrameDiv;
+        }
+
+        function loadContent() {
+            const container = document.getElementById('content-container');
+            
+            contentData.main_frames.forEach((mainFrame, index) => {
+                container.appendChild(createMainFrame(mainFrame, index));
+            });
+        }
+
+        // Load content when page is ready
+        document.addEventListener('DOMContentLoaded', loadContent);
+    </script>
+</body>
+</html>
+
